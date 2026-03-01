@@ -18,9 +18,7 @@ export PATH="/usr/local/bin:$PATH"
 EOF
 
 # Wrapper for nix profile add to update desktop database after installing new applications
-rm -rf /usr/local 2>/dev/null || true
-mkdir -p /usr/local/bin
-cat > /usr/local/bin/nix << 'EOF'
+cat > /usr/bin/nix << 'EOF'
 #!/bin/bash
 if [[ "$1" == "profile" && ( "$2" == "add" || "$2" == "install" ) ]]; then
     NIXPKGS_ALLOW_UNFREE=1 /nix/var/nix/profiles/default/bin/nix profile add --impure "${@:3}"
@@ -30,7 +28,7 @@ else
     /nix/var/nix/profiles/default/bin/nix "$@"
 fi
 EOF
-chmod +x /usr/local/bin/nix
+chmod +x /usr/bin/nix
 
 # Install nixGL after Nix is ready
 cat > /etc/systemd/system/nixgl-install.service << 'EOF'
