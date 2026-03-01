@@ -14,7 +14,7 @@ if [ -d "$HOME/.nix-profile/share" ]; then
     export XDG_DATA_DIRS="$HOME/.nix-profile/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 fi
 export NIXPKGS_ALLOW_UNFREE=1
-export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/bin:$PATH"
 EOF
 
 # Wrapper for nix profile add to update desktop database after installing new applications
