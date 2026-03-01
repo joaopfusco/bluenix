@@ -30,12 +30,33 @@ fi
 EOF
 chmod +x /usr/bin/nix
 
+# Install Nix on first boot if it's not already installed
+cat > /etc/systemd/system/nix-install.service << 'EOF'
+[Unit]
+Description=Install Nix on first boot
+ConditionPathExists=!/nix/var/nix/profiles/default/bin/nix
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/nix/determinate-nix-installer.sh install ostree --no-confirm
+Restart=on-failure
+RestartSec=30
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable nix-install.service
+
 # Install nixGL after Nix is ready
 cat > /etc/systemd/system/nixgl-install.service << 'EOF'
 [Unit]
 Description=Install nixGL after Nix is ready
-After=nix-daemon.service
-Wants=nix-daemon.service
+After=nix-install.service nix-daemon.service
+Wants=nix-install.service nix-daemon.service
 ConditionPathExists=!/root/.nix-profile/bin/nixGL
 
 [Service]
