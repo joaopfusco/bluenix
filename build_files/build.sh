@@ -18,7 +18,7 @@ export PATH="/usr/local/bin:$PATH"
 EOF
 
 # Wrapper for nix profile add to update desktop database after installing new applications
-rm -f /usr/local/bin 2>/dev/null || true
+rm -rf /usr/local 2>/dev/null || true
 mkdir -p /usr/local/bin
 cat > /usr/local/bin/nix << 'EOF'
 #!/bin/bash
