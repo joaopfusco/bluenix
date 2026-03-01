@@ -40,7 +40,7 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/nix/determinate-nix-installer.sh install ostree --no-confirm
+ExecStart=/bin/bash /nix/determinate-nix-installer.sh install ostree --no-confirm
 Restart=on-failure
 RestartSec=30
 RemainAfterExit=yes
