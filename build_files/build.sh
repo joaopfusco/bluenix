@@ -23,6 +23,7 @@ cat > /usr/bin/nix << 'EOF'
 if [[ "$1" == "profile" && ( "$2" == "add" || "$2" == "install" ) ]]; then
     NIXPKGS_ALLOW_UNFREE=1 /nix/var/nix/profiles/default/bin/nix profile add --impure "${@:3}"
     ln -sf ~/.nix-profile/share/applications/*.desktop ~/.local/share/applications/ 2>/dev/null || true
+    rm -f ~/.local/share/icons/nix-hicolor 2>/dev/null || true
     ln -sf ~/.nix-profile/share/icons/hicolor ~/.local/share/icons/nix-hicolor 2>/dev/null || true
     update-desktop-database ~/.local/share/applications 2>/dev/null || true
 else
