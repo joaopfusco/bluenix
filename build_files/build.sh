@@ -40,6 +40,8 @@ ConditionPathExists=!/root/.nix-profile/bin/nixGL
 
 [Service]
 Type=oneshot
+Restart=on-failure
+RestartSec=30
 ExecStart=/bin/bash -c "NIXPKGS_ALLOW_UNFREE=1 nix profile add --impure github:nix-community/nixGL"
 RemainAfterExit=yes
 User=root
