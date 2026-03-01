@@ -35,8 +35,9 @@ cat > /etc/systemd/system/nix-install.service << 'EOF'
 [Unit]
 Description=Install Nix on first boot
 ConditionPathExists=!/nix/var/nix/profiles/default/bin/nix
-After=network-online.target
+After=network-online.target local-fs.target
 Wants=network-online.target
+Requires=local-fs.target
 
 [Service]
 Type=oneshot
