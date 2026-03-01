@@ -42,10 +42,14 @@ Se você só quer usar o Bluenix sem buildar sua própria imagem, faça rebase d
 ```bash
 rpm-ostree rebase ostree-image-signed:docker://ghcr.io/joaopfusco/bluenix:latest
 ```
+ou
+```bash
+rpm-ostree rebase ostree-image-signed:docker://ghcr.io/joaopfusco/bluenix-nvidia-open:latest
+```
 
 Reinicie. No primeiro boot o Nix será instalado automaticamente.
 
-> Se o Nix não instalar automaticamente, execute manualmente:
+> Se o Nix não instalar automaticamente ou der algum erro após o reboot, execute manualmente:
 > ```bash
 > sudo /nix/determinate-nix-installer.sh install ostree --no-confirm
 > ```
