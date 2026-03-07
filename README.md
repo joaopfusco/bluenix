@@ -17,7 +17,6 @@ Com o Bluenix você tem:
 - **Nix** como gerenciador de pacotes principal — instala qualquer coisa com `nix profile add`
 - **Apps GUI** aparecem automaticamente no GNOME após a instalação
 - **Pacotes unfree** (VSCode, Chrome, Slack, etc) funcionam sem configuração extra
-- **nixGL** instalado automaticamente para apps que precisam de aceleração GPU
 - **Flatpak e brew** continuam funcionando normalmente
 - **Atualizações automáticas** — o sistema se mantém atualizado sem intervenção
 
@@ -65,14 +64,6 @@ nix profile add nixpkgs#vscode
 nix profile add nixpkgs#google-chrome
 nix profile add nixpkgs#slack
 nix profile add nixpkgs#obs-studio
-```
-
-O app aparece no GNOME imediatamente. O ícone correto aparece após relogar.
-
-Para apps que precisam de aceleração GPU, o nixGL já vem instalado:
-
-```bash
-nixGL nome-do-app
 ```
 
 ---

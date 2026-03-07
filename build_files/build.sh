@@ -8,68 +8,10 @@ mkdir -p /nix && \
     chmod a+rx /nix/determinate-nix-installer.sh
 
 # Configure XDG_DATA_DIRS so GNOME can find .desktop files from Nix apps,
-# allow unfree packages, and ensure /usr/local/bin takes priority in PATH
+# allow unfree packages by default, and make these settings available to all users.
 cat > /etc/profile.d/nix-xdg.sh << 'EOF'
 if [ -d "$HOME/.nix-profile/share" ]; then
     export XDG_DATA_DIRS="$HOME/.nix-profile/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 fi
 export NIXPKGS_ALLOW_UNFREE=1
-export PATH="/usr/bin:$PATH"
 EOF
-
-# Wrapper for nix profile add to update desktop database after installing new applications
-cat > /usr/bin/nix << 'EOF'
-#!/bin/bash
-if [[ "$1" == "profile" && ( "$2" == "add" || "$2" == "install" ) ]]; then
-    NIXPKGS_ALLOW_UNFREE=1 /nix/var/nix/profiles/default/bin/nix profile add --impure "${@:3}"
-    ln -sf ~/.nix-profile/share/applications/*.desktop ~/.local/share/applications/ 2>/dev/null || true
-    update-desktop-database ~/.local/share/applications 2>/dev/null || true
-else
-    /nix/var/nix/profiles/default/bin/nix "$@"
-fi
-EOF
-chmod +x /usr/bin/nix
-
-# Install Nix on first boot if it's not already installed
-cat > /etc/systemd/system/nix-install.service << 'EOF'
-[Unit]
-Description=Install Nix on first boot
-ConditionPathExists=!/nix/var/nix/profiles/default/bin/nix
-After=network-online.target local-fs.target
-Wants=network-online.target
-Requires=local-fs.target
-
-[Service]
-Type=oneshot
-ExecStart=/bin/bash /nix/determinate-nix-installer.sh install ostree --no-confirm
-Restart=on-failure
-RestartSec=30
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl enable nix-install.service
-
-# Install nixGL after Nix is ready
-cat > /etc/systemd/system/nixgl-install.service << 'EOF'
-[Unit]
-Description=Install nixGL after Nix is ready
-After=nix-install.service nix-daemon.service
-Wants=nix-install.service nix-daemon.service
-ConditionPathExists=!/root/.nix-profile/bin/nixGL
-
-[Service]
-Type=oneshot
-Restart=on-failure
-RestartSec=30
-ExecStart=/bin/bash -c "NIXPKGS_ALLOW_UNFREE=1 nix profile add --impure github:nix-community/nixGL"
-RemainAfterExit=yes
-User=root
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl enable nixgl-install.service
